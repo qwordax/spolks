@@ -1,9 +1,28 @@
 #include "main.h"
 
+int opterr = 0;
+
 int main(int argc, char **argv)
 {
     int size = 0;
     int rank = 0;
+
+    int opt = 0;
+    int res = 0;
+
+    while ((res = getopt(argc, argv, "hi")) != -1) {
+        switch (res) {
+            case 'h':
+                fprintf(stdout, "usage: %s [-i]\n", argv[0]);
+                return EXIT_SUCCESS;
+            case 'i':
+                opt = 1;
+                break;
+            default:
+                fprintf(stderr, "error: invalid option \'%c\'\n", optopt);
+                return EXIT_FAILURE;
+        }
+    }
 
     MPI_Init(&argc, &argv);
 
