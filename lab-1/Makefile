@@ -1,6 +1,6 @@
 PROGRAM := matrix
 
-CC := gcc
+CC := mpicc
 
 $(PROGRAM): main.o
 	$(CC) -o $(PROGRAM) main.o
