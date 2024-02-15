@@ -24,6 +24,21 @@ int main(int argc, char **argv)
         }
     }
 
+    if (argv[optind] == NULL) {
+        fprintf(stderr, "error: no matrix size\n");
+        return EXIT_FAILURE;
+    }
+
+    char *sptr = argv[optind];
+    char *eptr = NULL;
+
+    int n = strtol(sptr, &eptr, 0);
+
+    if (n <= 0 || *sptr == '\0' || *eptr != '\0') {
+        fprintf(stderr, "error: invalid input\n");
+        return EXIT_FAILURE;
+    }
+
     MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
