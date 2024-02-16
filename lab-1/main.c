@@ -73,15 +73,7 @@ int main(int argc, char **argv)
     MPI_Finalize();
 
     if (rank == 0 && flags.c) {
-        res = 1;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                res &= c[i * n + j] == d[i * n + j];
-            }
-        }
-
-        printf("%s\n", res ? "true" : "false");
+        printf("%s\n", equal(c, d, n, n) ? "true" : "false");
     }
 
     free(a);

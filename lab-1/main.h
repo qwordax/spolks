@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include "compute.h"
+#include "equal.h"
 
 #include <mpi.h>
 #include <stdio.h>
