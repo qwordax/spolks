@@ -25,7 +25,7 @@ int main(int argc, char **argv)
                 flags.i = 1;
                 break;
             case 'h':
-                fprintf(stdout, "usage: %s [-ci]\n", argv[0]);
+                fprintf(stdout, "usage: %s [-ci] <size>\n", argv[0]);
                 return EXIT_SUCCESS;
             default:
                 fprintf(stderr, "error: invalid option \'%c\'\n", optopt);
@@ -34,7 +34,12 @@ int main(int argc, char **argv)
     }
 
     if (argv[optind] == NULL) {
-        fprintf(stderr, "error: no matrix size\n");
+        fprintf(stderr, "error: no arguments provided\n");
+        return EXIT_FAILURE;
+    }
+
+    if (argv[optind + 1] != NULL) {
+        fprintf(stderr, "error: too many arguments\n");
         return EXIT_FAILURE;
     }
 
@@ -48,12 +53,41 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
+    int *a = (int *)malloc(n * n * sizeof(int));
+    int *b = (int *)malloc(n * n * sizeof(int));
+    int *c = (int *)malloc(n * n * sizeof(int));
+    int *d = (int *)malloc(n * n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            a[i * n + j] = rand() % 20 - 10;
+            b[i * n + j] = rand() % 20 - 10;
+        }
+    }
+
     MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     MPI_Finalize();
+
+    if (rank == 0 && flags.c) {
+        res = 1;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                res &= c[i * n + j] == d[i * n + j];
+            }
+        }
+
+        printf("%s\n", res ? "true" : "false");
+    }
+
+    free(a);
+    free(b);
+    free(c);
+    free(d);
 
     return EXIT_SUCCESS;
 }
