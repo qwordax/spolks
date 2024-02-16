@@ -28,18 +28,18 @@ int main(int argc, char **argv)
                 fprintf(stdout, "usage: %s [-ci] <size>\n", argv[0]);
                 return EXIT_SUCCESS;
             default:
-                fprintf(stderr, "error: invalid option \'%c\'\n", optopt);
+                fprintf(stderr, "%s: error: invalid option \'%c\'\n", argv[0], optopt);
                 return EXIT_FAILURE;
         }
     }
 
     if (argv[optind] == NULL) {
-        fprintf(stderr, "error: no arguments provided\n");
+        fprintf(stderr, "%s: error: no arguments provided\n", argv[0]);
         return EXIT_FAILURE;
     }
 
     if (argv[optind + 1] != NULL) {
-        fprintf(stderr, "error: too many arguments\n");
+        fprintf(stderr, "%s: error: too many arguments\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     int n = strtol(sptr, &eptr, 0);
 
     if (n <= 0 || *sptr == '\0' || *eptr != '\0') {
-        fprintf(stderr, "error: invalid input\n");
+        fprintf(stderr, "%s: error: invalid input\n", argv[0]);
         return EXIT_FAILURE;
     }
 
