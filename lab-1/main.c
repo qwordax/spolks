@@ -2,22 +2,31 @@
 
 int opterr = 0;
 
+struct {
+    int c;
+    int i;
+} flags;
+
 int main(int argc, char **argv)
 {
     int size = 0;
     int rank = 0;
 
-    int opt = 0;
     int res = 0;
 
-    while ((res = getopt(argc, argv, "hi")) != -1) {
+    srand(time(NULL));
+
+    while ((res = getopt(argc, argv, "cih")) != -1) {
         switch (res) {
-            case 'h':
-                fprintf(stdout, "usage: %s [-i]\n", argv[0]);
-                return EXIT_SUCCESS;
-            case 'i':
-                opt = 1;
+            case 'c':
+                flags.c = 1;
                 break;
+            case 'i':
+                flags.i = 1;
+                break;
+            case 'h':
+                fprintf(stdout, "usage: %s [-ci]\n", argv[0]);
+                return EXIT_SUCCESS;
             default:
                 fprintf(stderr, "error: invalid option \'%c\'\n", optopt);
                 return EXIT_FAILURE;
