@@ -70,11 +70,131 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    MPI_Finalize();
+    MPI_Request req;
 
-    if (rank == 0 && flags.c) {
-        printf("%s\n", equal(c, d, n, n) ? "true" : "false");
+    int rows = (int)(n / size) + 1;
+
+    double stime = 0.0;
+    double etime = 0.0;
+
+    if (rank == 0) {
+        printf("size:\t%d\n", size);
+        printf("rows:\t%d\n", rows);
+
+        int ssize = 0;
+        int esize = 0;
+
+        stime = MPI_Wtime();
+
+        for (int r = 1; r < size; r++) {
+            ssize = r * rows;
+            esize = r * rows + rows;
+
+            if (esize > n) {
+                esize = n;
+            }
+
+            int msgsize = (esize - ssize) * n;
+
+            if (flags.i) {
+                MPI_Isend(a + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
+
+                MPI_Isend(b + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
+
+                MPI_Wait(&req, MPI_STATUS_IGNORE);
+            } else {
+                MPI_Send(a + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD);
+                MPI_Send(b + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD);
+            }
+        }
+
+        ssize = rank * rows;
+        esize = rank * rows + rows;
+
+        if (esize > n) {
+            esize = n;
+        }
+
+        compute(c, a, b, esize - ssize, n);
+
+        for (int r = 1; r < size; r++) {
+            ssize = r * rows;
+            esize = r * rows + rows;
+
+            if (esize > n) {
+                esize = n;
+            }
+
+            int msgsize = (esize - ssize) * n;
+
+            if (flags.i) {
+                MPI_Irecv(c + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
+
+                MPI_Wait(&req, MPI_STATUS_IGNORE);
+            } else {
+                MPI_Recv(c + ssize * n, msgsize, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            }
+        }
+
+        etime = MPI_Wtime();
+    } else {
+        int ssize = rank * rows;
+        int esize = rank * rows + rows;
+
+        if (esize > n) {
+            esize = n;
+        }
+
+        int msgsize = (esize - ssize) * n;
+
+        if (flags.i) {
+            MPI_Irecv(a, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
+
+            MPI_Irecv(b, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
+
+            MPI_Wait(&req, MPI_STATUS_IGNORE);
+        } else {
+            MPI_Recv(a, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(b, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+
+        compute(c, a, b, esize - ssize, n);
+
+        if (flags.i) {
+            MPI_Isend(c, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
+
+            MPI_Wait(&req, MPI_STATUS_IGNORE);
+        } else {
+            MPI_Send(c, msgsize, MPI_INT,
+                0, MSG_TAG, MPI_COMM_WORLD);
+        }
     }
+
+    if (rank == 0) {
+        printf("time:\t%.2fs\n", etime - stime);
+
+        if (flags.c) {
+            etime = MPI_Wtime();
+            compute(d, a, b, n, n);
+            etime = MPI_Wtime();
+
+            printf("check:\t%.2fs\n", etime - stime);
+            printf("%s\n", equal(c, d, n, n) ? "true" : "false");
+        }
+    }
+
+    MPI_Finalize();
 
     free(a);
     free(b);

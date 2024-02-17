@@ -10,6 +10,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#define MSG_TAG 1337
+
 int main(int argc, char **argv);
 
 #endif
