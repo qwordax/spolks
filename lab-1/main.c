@@ -58,13 +58,6 @@ int main(int argc, char **argv)
     int *c = (int *)malloc(n * n * sizeof(int));
     int *d = (int *)malloc(n * n * sizeof(int));
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            a[i * n + j] = rand() % 20 - 10;
-            b[i * n + j] = rand() % 20 - 10;
-        }
-    }
-
     MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -72,7 +65,7 @@ int main(int argc, char **argv)
 
     MPI_Request req[2];
 
-    int rows = (int)(n / size) + 1;
+    int rows = (n / size) + 1;
 
     int from = 0;
     int to = 0;
@@ -86,9 +79,23 @@ int main(int argc, char **argv)
 
         start = MPI_Wtime();
 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                a[i * n + j] = rand() % 20 - 10;
+                b[i * n + j] = rand() % 20 - 10;
+            }
+        }
+
         for (int r = 1; r < size; r++) {
+            from = r * rows;
+            to = from + rows;
+
+            if (to > n) {
+                to = n;
+            }
+
             if (flags.i) {
-                MPI_Isend(a, n * n, MPI_INT,
+                MPI_Isend(a + from * n, (to - from) * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD, &req[0]);
                 MPI_Isend(b, n * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD, &req[1]);
@@ -142,7 +149,7 @@ int main(int argc, char **argv)
         }
 
         if (flags.i) {
-            MPI_Irecv(a, n * n, MPI_INT,
+            MPI_Irecv(a + from * n, (to - from) * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD, &req[0]);
             MPI_Irecv(b, n * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD, &req[1]);
