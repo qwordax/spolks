@@ -1,18 +1,14 @@
 #include "compute.h"
 
-void compute(int *c, const int *a, const int *b, int rows, int cols)
+void compute(int *res, const int *a, const int *b, int from, int to, int n)
 {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-//            int t = 0;
+    for (int i = from; i < to; i++) {
+        for (int j = 0; j < n; j++) {
+            res[i * n + j] = 0;
 
-//            for (int k = 0; k < cols; k++) {
-//                t += a[i * cols + k] * b[j * cols + k];
-//            }
-
-//            c[i * cols + j] = t;
-
-            c[i * cols + j] = a[i * cols + j] * b[i * cols + j];
+            for (int k = 0; k < n; k++) {
+                res[i * n + j] += a[i * n + k] * b[k * n + j];
+            }
         }
     }
 
