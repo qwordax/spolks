@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 
                 MPI_Waitall(2, req, MPI_STATUS_IGNORE);
             } else {
-                MPI_Send(a, n * n, MPI_INT,
+                MPI_Send(a + from * n, (to - from) * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD);
                 MPI_Send(b, n * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD);
@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 
             MPI_Waitall(2, req, MPI_STATUS_IGNORE);
         } else {
-            MPI_Recv(a, n * n, MPI_INT,
+            MPI_Recv(a + from * n, (to - from) * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(b, n * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
