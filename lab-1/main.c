@@ -63,12 +63,16 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    MPI_Request req[2];
+    MPI_Request req;
 
     int rows = (n / size) + 1;
 
-    int from = 0;
-    int to = 0;
+    int from = rank * rows;
+    int to = from + rows;
+
+    if (to > n) {
+        to = n;
+    }
 
     double start = 0.0;
     double end = 0.0;
@@ -87,52 +91,41 @@ int main(int argc, char **argv)
         }
 
         for (int r = 1; r < size; r++) {
-            from = r * rows;
-            to = from + rows;
+            int rfrom = r * rows;
+            int rto = rfrom + rows;
 
-            if (to > n) {
-                to = n;
+            if (rto > n) {
+                rto = n;
             }
 
             if (flags.i) {
-                MPI_Isend(a + from * n, (to - from) * n, MPI_INT,
-                    r, MSG_TAG, MPI_COMM_WORLD, &req[0]);
+                MPI_Isend(a + rfrom * n, (rto - rfrom) * n, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
                 MPI_Isend(b, n * n, MPI_INT,
-                    r, MSG_TAG, MPI_COMM_WORLD, &req[1]);
-
-                MPI_Waitall(2, req, MPI_STATUS_IGNORE);
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
             } else {
-                MPI_Send(a + from * n, (to - from) * n, MPI_INT,
+                MPI_Send(a + rfrom * n, (rto - rfrom) * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD);
                 MPI_Send(b, n * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD);
             }
         }
 
-        from = rank * rows;
-        to = from + rows;
-
-        if (to > n) {
-            to = n;
-        }
-
         compute(c, a, b, from, to, n);
 
         for (int r = 1; r < size; r++) {
-            from = r * rows;
-            to = from + rows;
+            int rfrom = r * rows;
+            int rto = rfrom + rows;
 
-            if (to > n) {
-                to = n;
+            if (rto > n) {
+                rto = n;
             }
 
             if (flags.i) {
-                MPI_Irecv(c + from * n, (to - from) * n, MPI_INT,
-                    r, MSG_TAG, MPI_COMM_WORLD, &req[0]);
-
-                MPI_Waitall(1, req, MPI_STATUS_IGNORE);
+                MPI_Irecv(c + rfrom * n, (rto - rfrom) * n, MPI_INT,
+                    r, MSG_TAG, MPI_COMM_WORLD, &req);
             } else {
-                MPI_Recv(c + from * n, (to - from) * n, MPI_INT,
+                MPI_Recv(c + rfrom * n, (rto - rfrom) * n, MPI_INT,
                     r, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
         }
@@ -141,20 +134,11 @@ int main(int argc, char **argv)
     }
 
     if (rank != 0) {
-        from = rank * rows;
-        to = from + rows;
-
-        if (to > n) {
-            to = n;
-        }
-
         if (flags.i) {
             MPI_Irecv(a + from * n, (to - from) * n, MPI_INT,
-                0, MSG_TAG, MPI_COMM_WORLD, &req[0]);
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
             MPI_Irecv(b, n * n, MPI_INT,
-                0, MSG_TAG, MPI_COMM_WORLD, &req[1]);
-
-            MPI_Waitall(2, req, MPI_STATUS_IGNORE);
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
         } else {
             MPI_Recv(a + from * n, (to - from) * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -166,9 +150,7 @@ int main(int argc, char **argv)
 
         if (flags.i) {
             MPI_Isend(c + from * n, (to - from) * n, MPI_INT,
-                0, MSG_TAG, MPI_COMM_WORLD, &req[0]);
-
-            MPI_Waitall(1, req, MPI_STATUS_IGNORE);
+                0, MSG_TAG, MPI_COMM_WORLD, &req);
         } else {
             MPI_Send(c + from * n, (to - from) * n, MPI_INT,
                 0, MSG_TAG, MPI_COMM_WORLD);
