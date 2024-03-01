@@ -3,6 +3,7 @@
 int opterr = 0;
 
 struct flags flags;
+struct args args;
 
 int main(int argc, char **argv)
 {
@@ -37,6 +38,27 @@ int main(int argc, char **argv)
 
     if (argv[optind + 2] != NULL) {
         fprintf(stderr, "error: too many arguments\n");
+        fprintf(stderr, "try \'%s -h\' for more information\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    char *start = NULL;
+    char *end = NULL;
+
+    start = argv[optind];
+    args.nsize = strtol(start, &end, 0);
+
+    if (args.nsize <= 0 || *start == '\0' || *end != '\0') {
+        fprintf(stderr, "error: invalid input\n");
+        fprintf(stderr, "try \'%s -h\' for more information\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    start = argv[optind + 1];
+    args.ngroup = strtol(start, &end, 0);
+
+    if (args.ngroup <= 0 || *start == '\0' || *end != '\0') {
+        fprintf(stderr, "error: invalid input\n");
         fprintf(stderr, "try \'%s -h\' for more information\n", argv[0]);
         return EXIT_FAILURE;
     }
