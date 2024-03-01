@@ -1,9 +1,12 @@
 CC := mpicc
 
-matrix: execute.o main.o
-	$(CC) -o matrix execute.o main.o
+matrix: compute.o execute.o main.o
+	$(CC) -o matrix compute.o execute.o main.o
 
-execute.o: execute.c execute.h args.h
+compute.o: compute.c compute.h
+	$(CC) -o compute.o -c compute.c
+
+execute.o: execute.c execute.h args.h compute.h
 	$(CC) -o execute.o -c execute.c
 
 main.o: main.c main.h args.h execute.h
@@ -11,5 +14,6 @@ main.o: main.c main.h args.h execute.h
 
 clean:
 	rm -f matrix
+	rm -f compute.o
 	rm -f execute.o
 	rm -f main.o
