@@ -3,8 +3,9 @@
 
 #include "flags.h"
 
+#include <mpi.h>
 #include <stdlib.h>
 
-int execute();
+int execute(int argc, char **argv);
 
 #endif
