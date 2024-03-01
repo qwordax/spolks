@@ -8,6 +8,7 @@ extern struct flags {
 extern struct args {
     int nsize;
     int ngroup;
+    int nproc;
 } args;
 
 #endif
