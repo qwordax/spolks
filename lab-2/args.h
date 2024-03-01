@@ -2,7 +2,6 @@
 #define ARGS_H
 
 extern struct flags {
-    int c;
     int p;
 } flags;
 
