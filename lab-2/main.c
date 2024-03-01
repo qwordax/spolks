@@ -20,7 +20,7 @@ int main(int argc, char **argv)
                 flags.c = 1;
                 break;
             case 'h':
-                fprintf(stdout, "usage: %s [-cph] <size> <groups>\n", argv[0]);
+                fprintf(stdout, "usage: %s [-chp] <nsize> <ngroup>\n", argv[0]);
                 return EXIT_SUCCESS;
             case 'p':
                 flags.p = 1;
