@@ -2,10 +2,7 @@
 
 int opterr = 0;
 
-struct {
-    int c;
-    int p;
-} flags;
+struct flags flags;
 
 int main(int argc, char **argv)
 {
@@ -44,5 +41,5 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    return EXIT_SUCCESS;
+    return execute();
 }
