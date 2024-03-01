@@ -3,10 +3,10 @@ CC := mpicc
 matrix: execute.o main.o
 	$(CC) -o matrix execute.o main.o
 
-execute.o: execute.c execute.h flags.h
+execute.o: execute.c execute.h args.h
 	$(CC) -o execute.o -c execute.c
 
-main.o: main.c main.h execute.h flags.h
+main.o: main.c main.h args.h execute.h
 	$(CC) -o main.o -c main.c
 
 clean:

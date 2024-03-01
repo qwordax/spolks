@@ -1,8 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include "args.h"
 #include "execute.h"
-#include "flags.h"
 
 #include <stdio.h>
 #include <stdlib.h>

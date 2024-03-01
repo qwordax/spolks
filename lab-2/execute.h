@@ -1,7 +1,7 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
 
-#include "flags.h"
+#include "args.h"
 
 #include <mpi.h>
 #include <stdlib.h>
