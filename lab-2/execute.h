@@ -5,6 +5,7 @@
 
 #include <mpi.h>
 #include <stdlib.h>
+#include <time.h>
 
 int execute(int argc, char **argv);
 
