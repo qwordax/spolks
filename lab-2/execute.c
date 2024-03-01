@@ -62,6 +62,22 @@ int execute(int argc, char **argv)
     MPI_Comm_size(comm, &nsize);
     MPI_Comm_rank(comm, &nrank);
 
+    int rows = (args.nsize / nsize) + 1;
+
+    int from = nrank * rows;
+    int to = from + rows;
+
+    if (to > args.nsize) {
+        to = args.nsize;
+    }
+
+    double start = 0.0;
+    double end = 0.0;
+
+    if (nrank == 0) {
+        printf("[%d]\t%.2fs\n", color, end - start);
+    }
+
     MPI_Finalize();
 
     return EXIT_SUCCESS;
