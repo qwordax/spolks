@@ -26,6 +26,27 @@ int process(int argc, char **argv)
     MPI_Comm_size(comm, &gpsize);
     MPI_Comm_rank(comm, &gprank);
 
+    MPI_File fpa, fpb, fpc;
+
+    MPI_File_open(comm, "a.bin",
+        MPI_MODE_RDONLY, MPI_INFO_NULL, &fpa);
+
+    MPI_File_open(comm, "b.bin",
+        MPI_MODE_RDONLY, MPI_INFO_NULL, &fpb);
+
+    char fname[100];
+    sprintf(fname, "c-%d.bin", color);
+
+    MPI_File_open(comm, fname,
+        MPI_MODE_CREATE | MPI_MODE_WRONLY,
+        MPI_INFO_NULL, &fpc);
+
+    MPI_File_set_size(fpc, args.nsize * args.nsize * sizeof(int));
+
+    MPI_File_close(&fpa);
+    MPI_File_close(&fpb);
+    MPI_File_close(&fpc);
+
     MPI_Comm_free(&comm);
 
     MPI_Finalize();
