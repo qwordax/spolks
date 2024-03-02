@@ -25,6 +25,8 @@ int process(int argc, char **argv)
     MPI_Comm_size(comm, &gpsize);
     MPI_Comm_rank(comm, &gprank);
 
+    double start = MPI_Wtime();
+
     MPI_File fpa, fpb, fpc;
 
     MPI_File_open(comm, "a.bin",
@@ -75,6 +77,13 @@ int process(int argc, char **argv)
     MPI_File_close(&fpc);
 
     MPI_Comm_free(&comm);
+
+    double end = MPI_Wtime();
+
+    if (gprank == 0) {
+        printf("[%d]\tgroup:\t%d\n", color, gpsize);
+        printf("\ttime:\t%.2fs\n", end - start);
+    }
 
     MPI_Finalize();
 
