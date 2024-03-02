@@ -29,7 +29,7 @@ int execute(int argc, char **argv)
 
     if (rank == 0) {
         printf("size:\t%d\n", size);
-        printf("ngroup:\t%d\n", args.ngroup);
+        printf("group:\t%d\n", args.ngroup);
 
         int t = 0;
 
