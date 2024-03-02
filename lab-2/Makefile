@@ -17,3 +17,6 @@ clean:
 	rm -f compute.o
 	rm -f execute.o
 	rm -f main.o
+
+bin:
+	rm -f *.bin
