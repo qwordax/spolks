@@ -1,7 +1,9 @@
 #include "compute.h"
 
-void compute(int *c, const int *a, const int *b, int from, int to, int n)
+void compute(int *c, const int *a, const int *b, int from, int to)
 {
+    int n = args.nsize;
+
     for (int i = from; i < to; i++) {
         for (int j = 0; j < n; j++) {
             c[i * n + j] = 0;

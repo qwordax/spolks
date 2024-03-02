@@ -2,23 +2,17 @@
 
 int opterr = 0;
 
-struct flags flags;
 struct args args;
 
 int main(int argc, char **argv)
 {
-    flags.p = 0;
-
     int res = 0;
 
-    while ((res = getopt(argc, argv, "hp")) != -1) {
+    while ((res = getopt(argc, argv, "h")) != -1) {
         switch (res) {
             case 'h':
-                fprintf(stdout, "usage: %s [-hp] <nsize> <ngroup>\n", argv[0]);
+                fprintf(stdout, "usage: %s [-h] <nsize> <ngroup>\n", argv[0]);
                 return EXIT_SUCCESS;
-            case 'p':
-                flags.p = 1;
-                break;
             case '?':
                 fprintf(stderr, "error: invalid option \'%c\'\n", optopt);
                 fprintf(stderr, "try \'%s -h\' for more information\n", argv[0]);
@@ -59,5 +53,5 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    return execute(argc, argv);
+    return process(argc, argv);
 }
