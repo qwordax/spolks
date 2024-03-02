@@ -29,14 +29,14 @@ int process(int argc, char **argv)
 
     MPI_File fpa, fpb, fpc;
 
-    MPI_File_open(comm, "a.bin",
+    MPI_File_open(comm, FOLDER FILE_A,
         MPI_MODE_RDONLY, MPI_INFO_NULL, &fpa);
 
-    MPI_File_open(comm, "b.bin",
+    MPI_File_open(comm, FOLDER FILE_B,
         MPI_MODE_RDONLY, MPI_INFO_NULL, &fpb);
 
     char fname[100];
-    sprintf(fname, "c-%d.bin", color);
+    sprintf(fname, FOLDER FILE_C, color);
 
     MPI_File_open(comm, fname,
         MPI_MODE_CREATE | MPI_MODE_WRONLY,

@@ -17,3 +17,6 @@ clean:
 	rm -f compute.o
 	rm -f main.o
 	rm -f process.o
+
+remove:
+	rm -rf bin

@@ -53,8 +53,10 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    FILE *fpa = fopen("a.bin", "wb");
-    FILE *fpb = fopen("b.bin", "wb");
+    mkdir(FOLDER, 0777);
+
+    FILE *fpa = fopen(FOLDER FILE_A, "wb");
+    FILE *fpb = fopen(FOLDER FILE_B, "wb");
 
     for (int i = 0; i < args.nsize; i++) {
         for (int j = 0; j < args.nsize; j++) {

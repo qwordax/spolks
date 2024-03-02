@@ -1,4 +1,6 @@
 matrix
 
+**/bin
+
 **/*.bin
 **/*.o
