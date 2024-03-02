@@ -13,7 +13,7 @@ int execute(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     if (rank == 0) {
-        printf("size:\t%d\n", size);
+        printf("\tsize:\t%d\n", size);
     }
 
     int csize;
@@ -32,7 +32,7 @@ int execute(int argc, char **argv)
     MPI_Comm_rank(comm, &crank);
 
     if (crank == 0) {
-        printf("group:\t%d\n", color);
+        printf("\tgroup:\t%d:%d\n", color, csize);
     }
 
     int rows = (args.nsize / csize) + 1;
@@ -48,7 +48,7 @@ int execute(int argc, char **argv)
     double end = 0.0;
 
     if (crank == 0) {
-        printf("[%d]\t%.2fs\n", color, end - start);
+        printf("[%d]\ttime:\t%.2fs\n", color, end - start);
     }
 
     MPI_Finalize();
