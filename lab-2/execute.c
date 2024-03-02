@@ -16,8 +16,8 @@ int execute(int argc, char **argv)
         printf("size:\t%d\n", size);
     }
 
-    int nsize;
-    int nrank;
+    int csize;
+    int crank;
 
     unsigned int color;
 
@@ -28,16 +28,16 @@ int execute(int argc, char **argv)
 
     MPI_Comm_split(MPI_COMM_WORLD, color, 0, &comm);
 
-    MPI_Comm_size(comm, &nsize);
-    MPI_Comm_rank(comm, &nrank);
+    MPI_Comm_size(comm, &csize);
+    MPI_Comm_rank(comm, &crank);
 
-    if (nrank == 0) {
+    if (crank == 0) {
         printf("group:\t%d\n", color);
     }
 
-    int rows = (args.nsize / nsize) + 1;
+    int rows = (args.nsize / csize) + 1;
 
-    int from = nrank * rows;
+    int from = crank * rows;
     int to = from + rows;
 
     if (to > args.nsize) {
@@ -47,7 +47,7 @@ int execute(int argc, char **argv)
     double start = 0.0;
     double end = 0.0;
 
-    if (nrank == 0) {
+    if (crank == 0) {
         printf("[%d]\t%.2fs\n", color, end - start);
     }
 
