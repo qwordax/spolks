@@ -73,5 +73,5 @@ int main(int argc, char **argv)
     fclose(fpa);
     fclose(fpb);
 
-    return EXIT_SUCCESS;
+    return process(argc, argv);
 }

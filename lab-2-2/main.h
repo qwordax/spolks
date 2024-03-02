@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include "args.h"
+#include "process.h"
 
 #include <stdio.h>
 #include <stdlib.h>
