@@ -2,8 +2,6 @@
 
 int execute(int argc, char **argv)
 {
-    srand(time(NULL));
-
     fill();
 
     int size;
@@ -21,7 +19,10 @@ int execute(int argc, char **argv)
     int nsize;
     int nrank;
 
-    int color = rand() % args.ngroup;
+    unsigned int color;
+
+    getrandom(&color, sizeof(color), 0);
+    color = color % args.ngroup;
 
     MPI_Comm comm;
 

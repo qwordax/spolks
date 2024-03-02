@@ -5,15 +5,19 @@ void fill()
     FILE *fa = fopen("a.bin", "wb");
     FILE *fb = fopen("b.bin", "wb");
 
-    int t;
+    int tmp;
 
     for (int i = 0; i < args.nsize; i++) {
         for (int j = 0; j < args.nsize; j++) {
-            t = rand() % 10 - 5;
-            fwrite(&t, sizeof(int), 1, fa);
+            getrandom(&tmp, sizeof(tmp), 0);
+            tmp = tmp % 10;
 
-            t = rand() % 10 - 5;
-            fwrite(&t, sizeof(int), 1, fb);
+            fwrite(&tmp, sizeof(tmp), 1, fa);
+
+            getrandom(&tmp, sizeof(tmp), 0);
+            tmp = tmp % 10;
+
+            fwrite(&tmp, sizeof(tmp), 1, fb);
         }
     }
 
