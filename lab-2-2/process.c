@@ -11,7 +11,6 @@ int process(int argc, char **argv)
 
     if (rank == 0) {
         printf("\tsize:\t%d\n", size);
-        printf("\tgroup:\t%d\n", args.ngroup);
     }
 
     int gpsize, gprank;
@@ -42,6 +41,34 @@ int process(int argc, char **argv)
         MPI_INFO_NULL, &fpc);
 
     MPI_File_set_size(fpc, args.nsize * args.nsize * sizeof(int));
+
+    int rows = args.nsize / gpsize + 1;
+
+    int from = gprank * rows;
+    int to = from + rows;
+
+    if (to > args.nsize) {
+        to = args.nsize;
+    }
+
+    int *a = (int *)malloc((to - from) * args.nsize * sizeof(int));
+    int *b = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+
+    MPI_File_read_at_all(fpa, from * args.nsize, a,
+        (to - from) * args.nsize,
+        MPI_INT, MPI_STATUS_IGNORE);
+
+    MPI_File_read_all(fpb, b,
+        args.nsize * args.nsize,
+        MPI_INT, MPI_STATUS_IGNORE);
+
+    int *c = (int *)malloc((to - from) * args.nsize * sizeof(int));
+
+    compute(c, a, b, from, to);
+
+    MPI_File_write_at_all(fpc, from * args.nsize, c,
+        (to - from) * args.nsize,
+        MPI_INT, MPI_STATUS_IGNORE);
 
     MPI_File_close(&fpa);
     MPI_File_close(&fpb);

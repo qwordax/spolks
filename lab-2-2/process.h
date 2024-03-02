@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include "args.h"
+#include "compute.h"
 
 #include <mpi.h>
 #include <stdio.h>
