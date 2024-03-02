@@ -19,8 +19,6 @@ int execute(int argc, char **argv)
         args.ngroup = size;
     }
 
-    args.nproc = size / args.ngroup;
-
     MPI_File_open(MPI_COMM_WORLD, "a.bin",
         MPI_MODE_CREATE | MPI_MODE_WRONLY,
         MPI_INFO_NULL, &fda);
@@ -32,7 +30,6 @@ int execute(int argc, char **argv)
     if (rank == 0) {
         printf("size:\t%d\n", size);
         printf("ngroup:\t%d\n", args.ngroup);
-        printf("nproc:\t%d\n", args.nproc);
 
         int t = 0;
 
@@ -53,7 +50,7 @@ int execute(int argc, char **argv)
     int nsize;
     int nrank;
 
-    int color = rank / (size / args.ngroup);
+    int color = rand() % args.ngroup;
 
     MPI_Comm comm;
 
