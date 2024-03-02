@@ -3,6 +3,7 @@
 
 #include "args.h"
 #include "compute.h"
+#include "fill.h"
 
 #include <mpi.h>
 #include <stdio.h>
