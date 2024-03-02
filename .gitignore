@@ -1,4 +1,4 @@
 matrix
 
-*.bin
-*.o
+**/*.bin
+**/*.o
