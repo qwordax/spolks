@@ -50,12 +50,14 @@ int process(int argc, char **argv)
     if (gprank == 0) {
         int tmp;
 
-        for (int i = 0; i < args.nsize * args.nsize; i++) {
-            getrandom(&tmp, sizeof(tmp), 0);
-            a[i] = tmp % 10;
+        for (int i = 0; i < args.nsize; i++) {
+            for (int j = 0; j < args.nsize; j++) {
+                getrandom(&tmp, sizeof(tmp), 0);
+                a[i * args.nsize + j] = tmp % 10;
 
-            getrandom(&tmp, sizeof(tmp), 0);
-            b[i] = tmp % 10;
+                getrandom(&tmp, sizeof(tmp), 0);
+                b[i * args.nsize + j] = tmp % 10;
+            }
         }
 
         for (int i = 0; i < gpsize; i++) {
