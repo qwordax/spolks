@@ -12,7 +12,7 @@ main.o: main.c main.h args.h process.h
 process.o: process.c process.h args.h compute.h
 	$(CC) -o process.o -c process.c
 
-clean:
+clean: remove
 	rm -f matrix
 	rm -f compute.o
 	rm -f main.o
