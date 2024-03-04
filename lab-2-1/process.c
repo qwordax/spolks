@@ -40,14 +40,18 @@ int process(int argc, char **argv)
         to = args.nsize;
     }
 
-    int *a = (int *)malloc(args.nsize * args.nsize * sizeof(int));
-    int *b = (int *)malloc(args.nsize * args.nsize * sizeof(int));
-    int *c = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+    int *a = NULL;
+    int *b = NULL;
+    int *c = NULL;
 
     int *counts = (int *)malloc(gpsize * sizeof(int));
     int *displs = (int *)malloc(gpsize * sizeof(int));
 
     if (gprank == 0) {
+        a = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+        b = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+        c = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+
         int tmp;
 
         for (int i = 0; i < args.nsize; i++) {
@@ -73,17 +77,25 @@ int process(int argc, char **argv)
         }
     }
 
+    if (gprank != 0) {
+        a = (int *)malloc((to - from) * args.nsize * sizeof(int));
+        b = (int *)malloc(args.nsize * args.nsize * sizeof(int));
+        c = (int *)malloc((to - from) * args.nsize * sizeof(int));
+    }
+
     MPI_Scatterv(a, counts, displs, MPI_INT,
         a, (to - from) * args.nsize, MPI_INT, 0, comm);
 
     MPI_Bcast(b, args.nsize * args.nsize, MPI_INT, 0, comm);
 
-    compute(c, a, b, from, to);
+    compute(c, a, b, to - from, args.nsize);
 
     MPI_Gatherv(c, (to - from) * args.nsize, MPI_INT,
         c, counts, displs, MPI_INT, 0, comm);
 
-    MPI_Comm_free(&comm);
+    free(a);
+    free(b);
+    free(c);
 
     double end = MPI_Wtime();
 
@@ -91,6 +103,8 @@ int process(int argc, char **argv)
         printf("[%d]\tgroup:\t%d\n", color, gpsize);
         printf("\ttime:\t%.2fs\n", end - start);
     }
+
+    MPI_Comm_free(&comm);
 
     MPI_Finalize();
 

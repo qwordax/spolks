@@ -3,7 +3,7 @@ CC := mpicc
 matrix: compute.o main.o process.o
 	$(CC) -o matrix compute.o main.o process.o
 
-compute.o: compute.c compute.h args.h
+compute.o: compute.c compute.h
 	$(CC) -o compute.o -c compute.c
 
 main.o: main.c main.h args.h process.h
