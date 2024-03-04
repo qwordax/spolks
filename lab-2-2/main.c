@@ -58,18 +58,18 @@ int main(int argc, char **argv)
     FILE *fpa = fopen(FOLDER FILE_A, "wb");
     FILE *fpb = fopen(FOLDER FILE_B, "wb");
 
-    for (int i = 0; i < args.nsize; i++) {
-        for (int j = 0; j < args.nsize; j++) {
-            getrandom(&res, sizeof(res), 0);
-            res = res % 10;
+    unsigned int t;
 
-            fwrite(&res, sizeof(int), 1, fpa);
+    for (int i = 0; i < args.nsize * args.nsize; i++) {
+        getrandom(&t, sizeof(t), 0);
+        t = t % 10;
 
-            getrandom(&res, sizeof(res), 0);
-            res = res % 10;
+        fwrite(&t, sizeof(unsigned int), 1, fpa);
 
-            fwrite(&res, sizeof(int), 1, fpb);
-        }
+        getrandom(&t, sizeof(t), 0);
+        t = t % 10;
+
+        fwrite(&t, sizeof(unsigned int), 1, fpb);
     }
 
     fclose(fpa);

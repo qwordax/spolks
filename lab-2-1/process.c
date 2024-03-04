@@ -93,16 +93,16 @@ int process(int argc, char **argv)
     MPI_Gatherv(c, (to - from) * args.nsize, MPI_INT,
         c, counts, displs, MPI_INT, 0, comm);
 
-    free(a);
-    free(b);
-    free(c);
-
     double end = MPI_Wtime();
 
     if (gprank == 0) {
         printf("[%d]\tgroup:\t%d\n", color, gpsize);
         printf("\ttime:\t%.2fs\n", end - start);
     }
+
+    free(a);
+    free(b);
+    free(c);
 
     MPI_Comm_free(&comm);
 
