@@ -31,13 +31,17 @@ int process(int argc, char **argv)
 
     double start = MPI_Wtime();
 
-    int rows = args.nsize / gpsize + 1;
+    int rows = args.nsize / gpsize + (args.nsize % gpsize != 0);
 
     int from = gprank * rows;
     int to = from + rows;
 
     if (to > args.nsize) {
         to = args.nsize;
+    }
+
+    if (from > to) {
+        from = to;
     }
 
     int *a = NULL;
@@ -72,6 +76,10 @@ int process(int argc, char **argv)
                 ito = args.nsize;
             }
 
+            if (ifrom > ito) {
+                ifrom = ito;
+            }
+
             counts[i] = (ito - ifrom) * args.nsize;
             displs[i] = ifrom * args.nsize;
         }
@@ -97,6 +105,7 @@ int process(int argc, char **argv)
 
     if (gprank == 0) {
         printf("[%d]\tgroup:\t%d\n", color, gpsize);
+        printf("\trows:\t%d\n", rows);
         printf("\ttime:\t%.2fs\n", end - start);
     }
 
