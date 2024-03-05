@@ -2,8 +2,7 @@
 
 int process(int argc, char **argv)
 {
-    int size;
-    int rank;
+    int size, rank;
 
     MPI_Init(&argc, &argv);
 
@@ -14,16 +13,13 @@ int process(int argc, char **argv)
         printf("\tsize:\t%d\n", size);
     }
 
-    int gpsize;
-    int gprank;
-
+    int gpsize, gprank;
     unsigned int color;
 
     getrandom(&color, sizeof(color), 0);
     color = color % args.ngroup;
 
     MPI_Comm comm;
-
     MPI_Comm_split(MPI_COMM_WORLD, color, 0, &comm);
 
     MPI_Comm_size(comm, &gpsize);
