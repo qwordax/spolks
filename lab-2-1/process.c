@@ -52,7 +52,7 @@ int process(int argc, char **argv)
         b = (int *)malloc(args.nsize * args.nsize * sizeof(int));
         c = (int *)malloc(args.nsize * args.nsize * sizeof(int));
 
-        int tmp;
+        unsigned int tmp;
 
         for (int i = 0; i < args.nsize; i++) {
             for (int j = 0; j < args.nsize; j++) {
